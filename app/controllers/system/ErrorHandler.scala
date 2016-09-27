@@ -6,7 +6,6 @@ import domains.Errors
 import play.api._
 import play.api.http.DefaultHttpErrorHandler
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -69,7 +68,8 @@ class ErrorHandler @Inject()(
     case FORBIDDEN => onForbidden(request, message)
     case NOT_FOUND => onNotFound(request, message)
     case clientError if statusCode >= 400 && statusCode < 500 => unprocessableEntity(request, message)
-    case nonClientError =>
-      throw new IllegalArgumentException(s"onClientError invoked with non client error status code $statusCode: $message")
+    case nonClientError => Future.successful {
+      InternalServerError(toJson(Errors.UnknownError))
+    }
   }
 }

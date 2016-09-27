@@ -1,9 +1,8 @@
 package services
 
-class Zoopla {
+import controllers.system.Config
 
-}
-
-object Zoopla {
-
+class Zoopla extends Config {
+  override val serviceName: String = "zoopla"
+  lazy val apiKey = getValue("apiKey")
 }
