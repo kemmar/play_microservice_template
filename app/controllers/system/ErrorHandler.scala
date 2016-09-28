@@ -50,14 +50,14 @@ class ErrorHandler @Inject()(
   }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    println(exception)
     Future.successful {
+      println(exception.getMessage)
+      println(exception.getStackTrace.map(println))
       InternalServerError(toJson(Errors.UnknownError))
     }
   }
 
   def unprocessableEntity(request: RequestHeader, message: String): Future[Result] = {
-    println(message)
     Future.successful {
       UnprocessableEntity(toJson(Errors.UnprocessableEntity(message)))
     }
@@ -69,6 +69,7 @@ class ErrorHandler @Inject()(
     case NOT_FOUND => onNotFound(request, message)
     case clientError if statusCode >= 400 && statusCode < 500 => unprocessableEntity(request, message)
     case nonClientError => Future.successful {
+      println(nonClientError)
       InternalServerError(toJson(Errors.UnknownError))
     }
   }

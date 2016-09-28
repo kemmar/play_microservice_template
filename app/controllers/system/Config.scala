@@ -3,10 +3,9 @@ package controllers.system
 import com.typesafe.config.ConfigFactory
 
 trait Config {
-  val serviceName: String
+  val path: String
 
-  lazy val config = ConfigFactory.load().getConfig(serviceName)
+  lazy val config = ConfigFactory.load().getConfig(path)
 
   def getValue(str: String) = config.getString(str)
-
 }

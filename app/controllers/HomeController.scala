@@ -2,20 +2,18 @@ package controllers
 
 import javax.inject._
 
-import domains.jj
-import play.api.libs.json.Json._
 import play.api.mvc._
 import services.Zoopla
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class HomeController @Inject()(zoopla: Zoopla) extends Controller {
 
-
-  def index = Action {
-    Ok(toJson(jj(zoopla.apiKey)))
+  def index = Action.async {
+    zoopla
+      .getProperties("tw7")
+      .map(Ok(_))
   }
 
-  def body = Action(parse.json[jj]) { req =>
-    Ok(toJson(req.body))
-  }
 }
