@@ -1,17 +1,19 @@
+import domains.Properties
+import org.scalatest.BeforeAndAfter
 import org.scalatestplus.play._
-import play.api.test._
 import play.api.test.Helpers._
+import play.api.test._
+import stubs.ZooplaStub
 
-/**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- * For more information, consult the wiki.
- */
-class ApplicationSpec extends PlaySpec with OneAppPerTest {
+class ApplicationSpec extends PlaySpec with OneAppPerTest with BeforeAndAfter {
+
+  before {
+    ZooplaStub.wireMockServer.start()
+  }
 
   "Routes" should {
 
-    "send 404 on a bad request" in  {
+    "send 404 on a bad request" in {
       val badRequest = route(app, FakeRequest(GET, "/boum")).get
 
       status(badRequest) mustBe NOT_FOUND
@@ -19,32 +21,48 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       contentAsString(badRequest) mustBe """{"code":"endpoint.not.found","message":"path not found: /boum"}"""
     }
 
-    "send 400 on a if body is incorrect" in  {
-      val badRequest = route(app, FakeRequest(PUT, "/", FakeHeaders(Seq("content-type" -> "application/json")), "{}")).get
-
-      status(badRequest) mustBe BAD_REQUEST
-      contentType(badRequest) mustBe Some("application/json")
-      contentAsString(badRequest).contains("bad.Request") mustBe true
-    }
-
-    "send 422 on a unprocessable entity if content type header is missing" in  {
-      val unprocessableEntity = route(app, FakeRequest(PUT, "/", FakeHeaders(), "{}")).get
-
-      status(unprocessableEntity) mustBe UNPROCESSABLE_ENTITY
-      contentType(unprocessableEntity) mustBe Some("application/json")
-      contentAsString(unprocessableEntity) mustBe """{"code":"unprocessable.entity","message":"Expecting text/json or application/json body"}"""
-    }
-
   }
 
-  "HomeController" should {
+  "ZooplaController" should {
 
-    "render the index page" in {
-      val home = route(app, FakeRequest(GET, "/")).get
+    "zoopla service is down" in {
+      ZooplaStub.wireMockServer.stop()
 
-      status(home) mustBe OK
-      contentType(home) mustBe Some("application/json")
-      contentAsString(home) mustBe """{"str":"hello world"}"""
+      val resp = route(app, FakeRequest(GET, "/area/tw8")).head
+
+        status(resp) mustBe SERVICE_UNAVAILABLE
+        contentType(resp) mustBe Some("application/json")
+    }
+
+    "get properties in area given" in {
+      ZooplaStub.getProperties("tw7", "testApiKey")
+
+      val resp = route(app, FakeRequest(GET, "/area/tw7")).get
+        status(resp) mustBe OK
+        contentType(resp) mustBe Some("application/json")
+
+        val properties = contentAsJson(resp).as[Properties]
+
+        properties.listing.head.price mustBe 120000000
+        properties.listing.size mustBe 1
+
+        properties.country mustBe "England"
+        properties.listing.head.agent_phone mustBe "020 8022 2986"
+    }
+
+    "no properties in area given" in {
+      ZooplaStub.getNoProperties("tw8", "testApiKey")
+
+      route(app, FakeRequest(GET, "/area/tw8")).map { resp =>
+        status(resp) mustBe OK
+        contentType(resp) mustBe Some("application/json")
+
+        val properties = contentAsJson(resp).as[Properties]
+
+        properties.country mustBe "England"
+        properties.listing.size mustBe 0
+      }
+
     }
 
   }

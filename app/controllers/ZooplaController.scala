@@ -9,12 +9,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ZooplaController @Inject()(zoopla: Zoopla) extends Controller {
 
-  def findProperties(area: String) = Action.async { search =>
+  def findProperties(area: String) = Action.async {
     zoopla
       .getProperties(area)
-      .map(
-        res => Ok(res)
-      )
+      .map(Ok(_))
   }
 
 }

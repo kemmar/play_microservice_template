@@ -22,9 +22,16 @@ class ErrorHandler @Inject()(
                             ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
-    println(exception.cause)
-    Future.successful(
-      InternalServerError(toJson(Errors.UnknownError))
+    onServerError(request, exception)
+  }
+
+  override def onDevServerError(request: RequestHeader, exception: UsefulException): Future[Result] = {
+    onServerError(request, exception)
+  }
+
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    Future.successful (
+      InternalServerError(toJson(Errors.ServiceUnavailable(request.path)))
     )
   }
 
@@ -46,14 +53,6 @@ class ErrorHandler @Inject()(
     println(message)
     Future.successful {
       BadRequest(toJson(Errors.BadRequest(message)))
-    }
-  }
-
-  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    Future.successful {
-      println(exception.getMessage)
-      println(exception.getStackTrace.map(println))
-      InternalServerError(toJson(Errors.UnknownError))
     }
   }
 

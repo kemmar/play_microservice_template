@@ -13,6 +13,7 @@ object Errors {
   val BadRequest = { str: String => Error("bad.Request", str) }
   val UnknownError = Error("unknown.error","unknown system error")
   val Forbidden = Error("unable.to.access","unable to access this endpoint")
+  val ServiceUnavailable = { srv: String => Error("unable.to.connect.to.service",s"unable to access service: $srv")}
 
 }
 
