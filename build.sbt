@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
-javaOptions in Test += "-Dconfig.resource=conf/application.test.conf"
+javaOptions in Test += "-Dconfig.resource=application.test.conf"
 
 resolvers += ("Unisay at bintray" at "http://dl.bintray.com/unisay/maven")
 
