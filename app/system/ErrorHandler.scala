@@ -1,8 +1,7 @@
-package controllers.system
+package system
 
 import javax.inject._
 
-import domains.Errors
 import play.api._
 import play.api.http.DefaultHttpErrorHandler
 import play.api.http.Status._

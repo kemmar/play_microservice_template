@@ -15,4 +15,10 @@ class ZooplaController @Inject()(zoopla: Zoopla) extends Controller {
       .map(Ok(_))
   }
 
+  def findPropertiesWithDirections(area: String, destination: String) = Action.async {
+    zoopla
+      .getProperties(area, destination)
+      .map(Ok(_))
+  }
+
 }

@@ -1,15 +1,17 @@
-package controllers.system
+package system
 
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class Service(implicit ws: WSClient) extends Config {
-  val serviceName: String
-  lazy val path: String = serviceName
+abstract class Service() extends Config {
 
+  val ws: WSClient
+  val serviceName: String
   val url: String
+
+  lazy val path: String = serviceName
 
   def service[T](url: String, method: String = "GET") = (send: Future[WSResponse] => Future[T]) => send {
       LogRequest {

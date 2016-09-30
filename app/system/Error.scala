@@ -1,4 +1,4 @@
-package domains
+package system
 
 import play.api.libs.json.Json.format
 

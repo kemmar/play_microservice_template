@@ -2,14 +2,14 @@ package services
 
 import javax.inject.Inject
 
-import controllers.system.Service
 import domains.Properties
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
+import system.Service
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Zoopla @Inject()(implicit ws: WSClient) extends Service {
+class Zoopla @Inject()(implicit val ws: WSClient) extends Service {
   override val serviceName: String = "zoopla"
 
   lazy val apiKey = getValue("apiKey")
@@ -24,5 +24,9 @@ class Zoopla @Inject()(implicit ws: WSClient) extends Service {
       .map(Json.toJson(_))
   }
 
-
+  def getProperties(area: String, destination: String) = service(getPropertiesUrl(area)){ res =>
+    res
+      .map(_.json.as[Properties].findDestination(destination))
+      .map(Json.toJson(_))
+  }
 }

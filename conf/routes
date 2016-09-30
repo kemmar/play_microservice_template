@@ -3,8 +3,12 @@
 # ~~~~
 
 # Zoopla
-GET     /area/:area                      controllers.ZooplaController.findProperties(area: String)
+GET     /area/:area                             controllers.ZooplaController.findProperties(area: String)
+GET     /area/:area/destination/:destination    controllers.ZooplaController.findPropertiesWithDirections(area, destination)
 
+# View
+
+GET     /                                       controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -1,4 +1,4 @@
-package controllers.system
+package system
 
 import com.typesafe.config.ConfigFactory
 
