@@ -1,12 +1,11 @@
 import com.google.inject.AbstractModule
-import services.{Google, Zoopla}
+import services.CbsCatalogueService
 
 class Module extends AbstractModule {
 
   override def configure() = {
-    bind(classOf[Zoopla]).asEagerSingleton()
+    bind(classOf[CbsCatalogueService]).asEagerSingleton()
 
-    bind(classOf[Google]).asEagerSingleton()
   }
 
 }
