@@ -1,12 +1,16 @@
 package controllers
 
+import com.google.inject.Inject
+import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
 import services.CbsCatalogueService
 
-class CatalogueController(cbsCatalogueService: CbsCatalogueService) extends Controller {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  def index() = Action {
-    Ok(cbsCatalogueService.getEvaluationCatalogue)
+class CatalogueController @Inject() (cbsCatalogueService: CbsCatalogueService) extends Controller {
+
+  def index() = Action.async {
+    cbsCatalogueService.getEvaluationCatalogue.map(k=> Ok(Json.toJson(k)))
   }
 
 }

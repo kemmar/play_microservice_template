@@ -1,0 +1,9 @@
+---
+applications:
+- name: zoopla
+  memory: 1024M
+  instances: 1
+  host: zoopla
+  domain: cf.dev-paas.bskyb.com
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: ./target/universal/zoopla-distence-1.0-SNAPSHOT.zip

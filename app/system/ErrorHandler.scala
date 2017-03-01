@@ -29,6 +29,8 @@ class ErrorHandler @Inject()(
   }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    println(exception.toString)
+
     Future.successful (
       InternalServerError(toJson(Errors.ServiceUnavailable(request.path)))
     )

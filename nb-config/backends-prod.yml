@@ -1,0 +1,32 @@
+---
+backends:
+- name: "ces-catalogue in prod"
+  description: "Customer services"
+  justification: "Needed to update customer"
+  port: 443
+  destination:
+  - ip: "10.105.64.4"
+  - ip: "10.137.64.4"
+- name: "syslog in all"
+  description: "Local syslogging port"
+  justification: "We need to log things"
+  port: 514
+  destination:
+  - ip: "127.0.0.1"
+- name: "new-relic in all"
+  description: "New Relic monitoring"
+  justification: "Need to connect to new relic"
+  port: 443
+  destination:
+  - ip: "50.31.164.146"
+  - ip: "50.31.164.145"
+  - ip: "50.31.164.148"
+  - ip: "50.31.164.147"
+  - ip: "50.31.164.149"
+- name: "appdynamics in prod"
+  description: "Access to appdynamics monitoring"
+  justification: "For monitoring purposes"
+  port: 80
+  destination:
+  - ip: "10.92.60.26"
+  - ip: "10.76.60.26"

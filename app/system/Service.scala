@@ -1,5 +1,6 @@
 package system
 
+import play.api.libs.ws.WSAuthScheme.BASIC
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,15 +15,16 @@ abstract class Service() extends Config {
   lazy val path: String = serviceName
 
   def service[T](url: String, method: String = "GET") = (send: Future[WSResponse] => Future[T]) => send {
-      LogRequest {
-        ws
-          .url(url)
-          .withHeaders(("Accept", "application/json"))
-          .withMethod(method.toUpperCase)
-      }
-        .execute()
-        .map(LogResponse)
+    LogRequest {
+      ws
+        .url(url)
+        .withHeaders(("Accept", "application/json"))
+        .withMethod(method.toUpperCase)
+        .withAuth("*********", "***********", BASIC)
     }
+      .execute()
+      .map(LogResponse)
+  }
 
 
   def LogResponse(res: WSResponse) = {
